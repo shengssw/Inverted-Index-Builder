@@ -47,7 +47,7 @@ string InvertedIndex::buildInvertedIndex() {
             if (currTerm == term) {
                 numPosting ++;
                 allPostingIds.push_back(currId);
-                allPostingFrequency.push_back(frequency);
+                allPostingFrequency.push_back(currFreq);
             } else {
                 // create inverted list for the previous term
                 vector<unsigned char> invertedlist;
@@ -119,12 +119,12 @@ string InvertedIndex::buildInvertedIndex() {
 
                 // Update lexicon with the term
                 //cout << "The startpos is " << startPos << " and the endpos is " << endPos << endl; 
-                lexiconEntry l = lexiconEntry(term, startPos, endPos, numPosting);
+                lexiconEntry l = lexiconEntry(term, startPos, endPos-1, numPosting);
                 lexicon.push_back(l);
 
                 // Reset for next term
                 numPosting = 1;
-                startPos = endPos + 1;
+                startPos = endPos;
                 term = currTerm;
                 allPostingIds.clear();
                 allPostingFrequency.clear();

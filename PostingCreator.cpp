@@ -34,6 +34,7 @@ int PostingCreator::createPosting() {
     string currentdocUrl;
     size_t docSize = 0;
     DocTable table = DocTable();
+    size_t offset = 0;
 
     ifstream myfile(sourceName, ios::in|ios::binary);
     if (myfile.is_open()) {
@@ -44,6 +45,7 @@ int PostingCreator::createPosting() {
                 // Get the begining of the doc
                 docTracker.push(1);
                 docId ++;
+                offset = (size_t) myfile.tellg();
                 continue;
                 //cout << "parsing document " << docId << "........" << endl;
             } 
@@ -51,7 +53,7 @@ int PostingCreator::createPosting() {
             if(!line.compare(tokenRight) && !docTracker.empty()) {
                 // Get the end of the doc text
                 docTracker.pop();
-                table.addEntry(docId, currentdocUrl, docSize);
+                table.addEntry(docId, currentdocUrl, docSize, offset);
                 docSize = 0;
                 getUrl = false;   
 
@@ -118,6 +120,19 @@ int PostingCreator::createPosting() {
                             if(isDigit || allChar) {
                                 // only push number or english char
                                 word.push_back(c);
+                            }
+
+                            if (it==line.end()-1) {
+                               if(!word.empty()){
+                                    if(allChar) {
+                                        // Lower the character
+                                        transform(word.begin(), word.end(), word.begin(),[](char c){ return tolower(c); });
+                                    }
+                                    // Add intermediate posting
+                                    Posting p = Posting(word, docId, 1);
+                                    Postings.push_back(p);
+                                    word.clear();
+                                } 
                             }
                         } else {
                             if(!word.empty()){

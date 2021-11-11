@@ -63,8 +63,8 @@ int main(int argc, char * args[]) {
 	cout << "The total time is " << elapsed_secs << " seconds" << endl;
 
 	// Remove mergedPositng
-	string cmdRemove = "rm -f " + mergedfile;
-    system(cmdRemove.c_str());
+	//string cmdRemove = "rm -f " + mergedfile;
+    //system(cmdRemove.c_str());
    
 	return 0;
 }
